@@ -3,149 +3,141 @@ package com.example.minesweeper;
 import java.util.Random;
 import java.util.Scanner;
 
-public class Main {
+class MineSweeper {
+
+    int rows;
+    int column;
+    int bombCount;
+    Cell [][] board;
     Scanner input = new Scanner(System.in);
     Random random = new Random();
-    int rows;
-    int columns;
-    int bombCount;
-    Cell [][]board;
 
-    public void createBoard() {
-        bombCount = (rows * columns) / 4;
-        board = new Cell[rows][columns];
+    void createBoard () {
+        bombCount = (rows * column) / 4;
+        board = new Cell[rows][column];
 
         for (int i = 0; i < board.length; i++) {
-            for (int j = 0; j < board[i].length; j++) {
-                board[i][j] = new Cell();
+            for (int j = 0; j < board.length; j++) {
+                board = new Cell[i][j];
             }
         }
 
         while (bombCount > 0) {
-
             int i = random.nextInt(0, rows);
-            int j = random.nextInt(0, columns);
+            int j = random.nextInt(0, column);
 
             if (!board[i][j].isHasBomb()) {
-
                 board[i][j].setHasBomb(true);
                 bombCount--;
+
             }
         }
-
         printMap();
 
         playGame();
     }
 
-    public boolean checkWin() {
-        int unopenedCells = 0;
+    boolean checkWin(){
+        int unOpenedCells = 0;
         int bombNumber = 0;
-        for (int i = 0; i < board.length; i++) {
-            for (int j = 0; j < board[i].length; j++) {
 
-                if (board[i][j].getContent() == "-") {
-                    unopenedCells++;
+        for(int i =0; i<board.length; i++){
+            for(int j=0; j<board.length; j++){
+                if( board[i][j].getContent() == "-"){
+                    unOpenedCells++;
                 }
-                if (board[i][j].isHasBomb()) {
+                if(board[i][j].isHasBomb()){
                     bombNumber++;
                 }
-
             }
-
         }
-        return bombNumber == unopenedCells;
 
-        //if (bombNumber == unopenedCells) {
-        //    return true;
-        //}
-        //return false;
+        return unOpenedCells == bombNumber;
     }
 
-    public void getBoardDimensionsInput() {
-        System.out.println("Welcome to Mine Sweeper!");
+    void userInput(){
 
-        System.out.print("Please enter a rows number :");
+        System.out.println("Welcome to the mine sweeper!");
+
+        System.out.print("Please enter a rows number : ");
         rows = input.nextInt();
-        System.out.print("Please enter a column number :");
-        columns = input.nextInt();
+
+        System.out.print("Please enter a column number : ");
+        column = input.nextInt();
         createBoard();
     }
-
-    public void playGame(){
+    void playGame(){
         boolean finish = false;
-        while (!finish) {
-            System.out.print("Enter a row: ");
-            int rowInput=input.nextInt();
 
-            System.out.print("Enter a column: ");
-            int columnInput=input.nextInt();
+        while (!finish){
+            System.out.print("Please enter a rows :");
+            int newRows = input.nextInt();
+
+            System.out.print("Please enter a column : ");
+            int newColumn = input.nextInt();
 
             int bombCountOfCell = 0;
-            if ((rowInput > rows || columnInput > columns) && (rowInput < 0 || columnInput < 0))
+            if((newRows > rows || newColumn > column) && (newRows < 0 || newColumn < 0) ){
                 System.out.println("Row or column choice is out of bounds. Try again.");
-            else if (board[rowInput][columnInput].isHasBomb()) {
+            } else if (board[newRows][newColumn].hasBomb) {
                 System.out.println("Bomb exploded! You lose!");
                 printMineMap();
                 finish = true;
-            }
-            else if (board[rowInput][columnInput].getContent() != "-") {
+            } else if (board[newRows][newColumn].getContent() != "-") {
                 System.out.println("This sell is already selected. Try another cell.");
             }
-            else {
-                //if (board[rowInput][columnInput].getContent() == "-" && !board[rowInput][columnInput].isHasBomb()) {
-                for (int i = rowInput - 1; i < rowInput + 2; i++) {
-                    for (int j = columnInput - 1; j < columnInput + 2; j++) {
-
-                        if (i >= 0 && j >= 0 && i < rows && j < columns && board[i][j].isHasBomb()) {
+            else{
+                for(int i = newRows-1; i < newRows +2; i++){
+                    for (int j = newColumn -1; j < newColumn +2; j++ ){
+                        if((i >= 0 && j >= 0) && (i < rows && j < column) && board[i][j].hasBomb ){
                             bombCountOfCell++;
-                            //board[rowInput][columnInput].setContent(Integer.toString(bombCountOfCell));
                         }
-                        //else {
-                            //board[rowInput][columnInput].setContent(Integer.toString(bombCountOfCell));
-                        //}
                     }
                 }
-                board[rowInput][columnInput].setContent(Integer.toString(bombCountOfCell));
-                printMap();
+                board[newRows][newColumn].setContent(Integer.toString(bombCountOfCell));
 
-                if (checkWin()) {
+                if (checkWin()){
                     System.out.println("You win!");
                     printMineMap();
                     finish = true;
                 }
-                //}
             }
         }
     }
 
-    public void printMap() {
-        System.out.println("||||||||||||||||||||||||||||||||||||||||||||||");
-        for (int i=0; i<board.length; i++){
-            for (int j=0; j<board.length; j++){
-                System.out.print(board[i][j].getContent() + " ");
+    public void printMap(){
+        System.out.println("1");
+        for(int i = 0; i<board.length; i++){
+            for(int j = 0; j<board.length; j++){
+                System.out.println(board[i][j].getContent() + " ");
             }
             System.out.println();
         }
-        System.out.println("||||||||||||||||||||||||||||||||||||||||||||||");
+        System.out.println("2");
+
+
     }
 
-    public void printMineMap() {
-        System.out.println("||||||||||||||||||||||||||||||||||||||||||||||");
-        for (int i=0; i<board.length; i++){
-            for (int j=0; j<board.length; j++){
-                if (board[i][j].isHasBomb()){
-                    System.out.print("* ");
+    public void printMineMap(){
+        System.out.println(" ");
+        for (int i = 0; i<board.length; i++){
+            for(int j = 0; j< board.length; j++){
+                if(board[i][j].hasBomb){
+                    System.out.println("* ");
                 }
                 else {
-                    System.out.print("- ");
+                    System.out.println("- ");
                 }
+                System.out.println();
             }
-            System.out.println();
+            System.out.println("2");
         }
-        System.out.println("||||||||||||||||||||||||||||||||||||||||||||||");
+
     }
+}
+public class Main {
     public void main(String[] args) {
-        getBoardDimensionsInput();
+        MineSweeper ms = new MineSweeper();
+        ms.userInput();
     }
 }
